@@ -16,13 +16,54 @@ const createNewPost = catchAsync(async (req, res) => {
   });
 });
 
-const getAllPosts = catchAsync(async (req, res) => {});
+const getAllPosts = catchAsync(async (req, res) => {
+  const result = await postService.getAllPosts();
 
-const getPostById = catchAsync(async (req, res) => {});
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Posts retrieved successfully",
+    data: result,
+  });
+});
 
-const updatePostById = catchAsync(async (req, res) => {});
+const getPostById = catchAsync(async (req, res) => {
+  const { postId } = req.params;
+  const result = await postService.getPostById(postId);
 
-const deletePostById = catchAsync(async (req, res) => {});
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Post retrieved successfully",
+    data: result,
+  });
+});
+
+const updatePostById = catchAsync(async (req, res) => {
+  const { postId } = req.params;
+  const files = req.files as Express.Multer.File[];
+
+  const result = await postService.updatePostById(postId, req.body, files);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Post updated successfully",
+    data: result,
+  });
+});
+
+const deletePostById = catchAsync(async (req, res) => {
+  const { postId } = req.params;
+  const result = await postService.deletePostById(postId);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Post deleted successfully",
+    data: result,
+  });
+});
 
 const postController = {
   createNewPost,
