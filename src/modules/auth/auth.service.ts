@@ -67,7 +67,6 @@ const refreshToken = async (token: string) => {
 
   try {
     decodedToken = verifyToken(token, config.refreshTokenSecret as string);
-
     if (!decodedToken) {
       throw new AppError("Invalid token", StatusCodes.UNAUTHORIZED);
     }
