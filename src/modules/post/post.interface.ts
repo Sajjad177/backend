@@ -7,7 +7,6 @@ export interface IPost {
     public_id: string;
     url: string;
   }[];
-  visibility: "public" | "private";
   totalComments: number;
   totalLikes: number;
   createdAt?: Date;
