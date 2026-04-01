@@ -4,6 +4,7 @@ export interface IComment {
   postId: Types.ObjectId;
   userId: Types.ObjectId;
   text: string;
+  commentTotalLikes: number;
   createdAt?: Date;
   updatedAt?: Date;
 }

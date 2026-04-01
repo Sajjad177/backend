@@ -17,6 +17,10 @@ const CommentSchema = new Schema<IComment>(
       type: String,
       required: true,
     },
+    commentTotalLikes: {
+      type: Number,
+      default: 0,
+    }
   },
   { timestamps: true, versionKey: false },
 );
