@@ -40,10 +40,11 @@ const getPostById = catchAsync(async (req, res) => {
 });
 
 const updatePostById = catchAsync(async (req, res) => {
+  const { email } = req.user;
   const { postId } = req.params;
   const files = req.files as Express.Multer.File[];
 
-  const result = await postService.updatePostById(postId, req.body, files);
+  const result = await postService.updatePostById(postId, req.body, files, email);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -54,8 +55,9 @@ const updatePostById = catchAsync(async (req, res) => {
 });
 
 const deletePostById = catchAsync(async (req, res) => {
+  const { email } = req.user;
   const { postId } = req.params;
-  const result = await postService.deletePostById(postId);
+  const result = await postService.deletePostById(postId, email);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

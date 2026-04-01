@@ -62,9 +62,25 @@ const updatePostById = async (
   postId: string,
   payload: Partial<IPost>,
   files?: Express.Multer.File[],
+  email?: string,
 ) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new AppError(
+      "Your account is not found. Please sign up to create a post.",
+      StatusCodes.NOT_FOUND,
+    );
+  }
+
   const post = await Post.findById(postId);
   if (!post) throw new AppError("Post not found", StatusCodes.NOT_FOUND);
+
+  if (post.authorId.toString() !== user._id.toString()) {
+    throw new AppError(
+      "You are not authorized to update this post.",
+      StatusCodes.FORBIDDEN,
+    );
+  }
 
   let uploadedImages = post.images || [];
 
@@ -120,10 +136,25 @@ const updatePostById = async (
   return updatedPost;
 };
 
-const deletePostById = async (postId: string) => {
+const deletePostById = async (postId: string, email?: string) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new AppError(
+      "Your account is not found. Please sign up to create a post.",
+      StatusCodes.NOT_FOUND,
+    );
+  }
+
   const isExist = await Post.findById(postId);
   if (!isExist) {
     throw new AppError("Post not found", StatusCodes.NOT_FOUND);
+  }
+
+  if (isExist.authorId.toString() !== user._id.toString()) {
+    throw new AppError(
+      "You are not authorized to delete this post.",
+      StatusCodes.FORBIDDEN,
+    );
   }
 
   if (isExist.images?.length) {
