@@ -13,5 +13,17 @@ router.post(
   postController.createNewPost,
 );
 
+router.get("/", postController.getAllPosts);
+router.get("/:postId", postController.getPostById);
+
+router.put(
+  "/update/:postId",
+  upload.array("images", 10),
+  auth(USER_ROLE.USER),
+  postController.updatePostById,
+);
+
+router.delete("/:postId", auth(USER_ROLE.USER), postController.deletePostById);
+
 const postRouter = router;
 export default postRouter;

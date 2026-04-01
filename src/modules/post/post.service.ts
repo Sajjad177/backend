@@ -63,65 +63,75 @@ const updatePostById = async (
   payload: Partial<IPost>,
   files?: Express.Multer.File[],
 ) => {
-  // 🔹 Check if post exists
-  const isExist = await Post.findById(postId);
+  const post = await Post.findById(postId);
+  if (!post) throw new AppError("Post not found", StatusCodes.NOT_FOUND);
 
-  if (!isExist) {
-    throw new AppError("Post not found", StatusCodes.NOT_FOUND);
-  }
+  let uploadedImages = post.images || [];
 
-  let uploadedImages = isExist.images || [];
-
-  // 🔹 If new images uploaded
   if (files && files.length > 0) {
-    // delete old images from cloudinary
-    for (const img of isExist.images || []) {
-      await deleteFromCloudinary(img.public_id);
-    }
+    await Promise.all(
+      (post.images || []).map(async (img) => {
+        try {
+          await deleteFromCloudinary(img.public_id);
+        } catch (err) {
+          console.warn(
+            `Failed to delete Cloudinary image ${img.public_id}`,
+            err,
+          );
+        }
+      }),
+    );
 
-    uploadedImages = [];
+    const uploaded = await Promise.all(
+      files.map(async (file) => {
+        try {
+          const result = await uploadToCloudinary(file.path, "posts");
+          return {
+            url: result.secure_url,
+            public_id: result.public_id,
+          };
+        } catch (err) {
+          console.error(
+            "Cloudinary upload failed for file:",
+            file.originalname,
+            err,
+          );
+          return null;
+        }
+      }),
+    );
 
-    // upload new images
-    for (const file of files) {
-      const uploaded = await uploadToCloudinary(file.path, "posts");
-
-      uploadedImages.push({
-        url: uploaded.secure_url,
-        public_id: uploaded.public_id,
-      });
-    }
+    uploadedImages = uploaded.filter(Boolean) as {
+      url: string;
+      public_id: string;
+    }[];
   }
 
-  // 🔹 Update post
-  const result = await Post.findByIdAndUpdate(
-    postId,
-    {
-      ...(payload.text && { text: payload.text }),
-      ...(files && files.length > 0 && { images: uploadedImages }),
-    },
-    {
-      new: true,
-      runValidators: true,
-    },
-  );
+  const updateData: any = { ...payload };
+  if (files && files.length > 0) {
+    updateData.images = uploadedImages;
+  }
 
-  return result;
+  const updatedPost = await Post.findByIdAndUpdate(postId, updateData, {
+    new: true,
+    runValidators: true,
+  });
+
+  return updatedPost;
 };
 
 const deletePostById = async (postId: string) => {
-  // 🔹 Check if post exists
   const isExist = await Post.findById(postId);
-
   if (!isExist) {
     throw new AppError("Post not found", StatusCodes.NOT_FOUND);
   }
 
-  // 🔹 Delete images from cloudinary
-  for (const img of isExist.images || []) {
-    await deleteFromCloudinary(img.public_id);
+  if (isExist.images?.length) {
+    await Promise.all(
+      isExist.images.map((img) => deleteFromCloudinary(img.public_id)),
+    );
   }
 
-  // 🔹 Delete post
   const result = await Post.findByIdAndDelete(postId);
   return result;
 };
