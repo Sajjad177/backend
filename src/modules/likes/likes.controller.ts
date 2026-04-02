@@ -16,6 +16,35 @@ const toggleLikeForPost = catchAsync(async (req, res) => {
   });
 });
 
+const toggleLikeForComment = catchAsync(async (req, res) => {
+  const { email } = req.user;
+  const { commentId } = req.params;
+  const result = await likesService.toggleLikeForComment(email, commentId);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: `Comment has been ${result.liked ? "liked" : "unliked"} successfully.`,
+    data: result,
+  });
+});
+
+const toggleLikeForCommentReply = catchAsync(async (req, res) => {
+  const { email } = req.user;
+  const { replyCommentId } = req.params;
+  const result = await likesService.toggleLikeForCommentReply(
+    email,
+    replyCommentId,
+  );
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: `Reply comment has been ${result.liked ? "liked" : "unliked"} successfully.`,
+    data: result,
+  });
+});
+
 const getAllLikesByPost = catchAsync(async (req, res) => {
   const { postId } = req.params;
   const result = await likesService.getAllLikesByPost(postId);
@@ -28,9 +57,37 @@ const getAllLikesByPost = catchAsync(async (req, res) => {
   });
 });
 
+const getAllLikesByComment = catchAsync(async (req, res) => {
+  const { commentId } = req.params;
+  const result = await likesService.getAllLikesByComment(commentId);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Comment likes retrieved successfully",
+    data: result,
+  });
+});
+
+const getAllLikesByReplyComment = catchAsync(async (req, res) => {
+  const { replyCommentId } = req.params;
+  const result = await likesService.getAllLikesByReplyComment(replyCommentId);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Reply comment likes retrieved successfully",
+    data: result,
+  });
+});
+
 const likesController = {
   toggleLikeForPost,
   getAllLikesByPost,
+  toggleLikeForComment,
+  toggleLikeForCommentReply,
+  getAllLikesByComment,
+  getAllLikesByReplyComment,
 };
 
 export default likesController;

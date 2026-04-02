@@ -11,7 +11,24 @@ router.post(
   likesController.toggleLikeForPost,
 );
 
+router.post(
+  "/comment-toggle/:commentId",
+  auth(USER_ROLE.USER),
+  likesController.toggleLikeForComment,
+);
+
+router.post(
+  "/reply-comment-toggle/:replyCommentId",
+  auth(USER_ROLE.USER),
+  likesController.toggleLikeForCommentReply,
+);
+
 router.get("/:postId", likesController.getAllLikesByPost);
+router.get("/comment/:commentId", likesController.getAllLikesByComment);
+router.get(
+  "/reply-comment/:replyCommentId",
+  likesController.getAllLikesByReplyComment,
+);
 
 const likeRouter = router;
 export default likeRouter;
