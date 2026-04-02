@@ -1,10 +1,9 @@
 import { Types } from "mongoose";
 
 export interface ILikes {
-  user: Types.ObjectId;
-  postId?: Types.ObjectId;
-  commentId?: Types.ObjectId;
-  replyCommentId?: Types.ObjectId;
+  userId: Types.ObjectId;
+  targetId: Types.ObjectId;
+  targetType: "post" | "comment" | "reply";
   createdAt?: Date;
   updatedAt?: Date;
 }
