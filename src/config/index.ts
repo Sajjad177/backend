@@ -13,11 +13,6 @@ export default {
   refreshTokenSecret: process.env.JWT_REFRESH_TOKEN_SECRET,
   jwtRefreshTokenExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
 
-  email: {
-    emailAddress: process.env.EMAIL_ADDRESS,
-    emailPass: process.env.EMAIL_PASSWORD,
-    adminEmail: process.env.ADMIN_EMAIL,
-  },
   reset: {
     reset_password_token_secret: process.env.RESET_PASSWORD_TOKEN_SECRET,
     reset_password_token_expires: process.env.RESET_EXPIRES_IN,

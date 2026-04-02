@@ -19,57 +19,25 @@ const userSchema = new Schema<IUser>(
       required: true,
       unique: true,
     },
-    phone: {
-      type: String,
-    },
     password: {
       type: String,
       required: true,
     },
-    street: {
-      type: String,
-    },
-    location: {
-      type: String,
-    },
-    postalCode: {
-      type: String,
-    },
-    dateOfBirth: {
-      type: Date,
-    },
     role: {
       type: String,
-      enum: ["user", "admin"],
       default: "user",
     },
-    image: {
-      public_id: {
-        type: String,
-      },
-      url: {
-        type: String,
-      },
-    },
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
-    otp: { type: String, default: null },
-    otpExpires: { type: Date, default: null },
-    resetPasswordOtp: { type: String, default: null },
-    resetPasswordOtpExpires: { type: Date, default: null },
   },
   {
     timestamps: true,
     versionKey: false,
-  }
+  },
 );
 
 userSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(
     this.password,
-    Number(config.bcryptSaltRounds)
+    Number(config.bcryptSaltRounds),
   );
 
   next();
@@ -82,23 +50,21 @@ userSchema.post("save", function (doc, next) {
 
 userSchema.statics.isPasswordMatch = async function (
   password: string,
-  hashedPassword: string
+  hashedPassword: string,
 ) {
   return await bcrypt.compare(password, hashedPassword);
 };
 
 userSchema.statics.isUserExistByEmail = async function (
-  email: string
+  email: string,
 ): Promise<IUser | null> {
   return await User.findOne({ email });
 };
 
 userSchema.statics.isUserExistById = async function (
-  _id: string
+  _id: string,
 ): Promise<IUser | null> {
   return await User.findOne({ _id });
 };
-
-applyEncryption(userSchema, ["phone", "street", "location", "postalCode"]);
 
 export const User = model<IUser, userModel>("User", userSchema);
