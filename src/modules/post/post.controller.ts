@@ -17,13 +17,16 @@ const createNewPost = catchAsync(async (req, res) => {
 });
 
 const getAllPosts = catchAsync(async (req, res) => {
-  const result = await postService.getAllPosts();
+  const result = await postService.getAllPosts(req.query);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
     message: "Posts retrieved successfully",
-    data: result,
+    data: result.data,
+    meta: {
+      nextCursor: result.nextCursor,
+    },
   });
 });
 

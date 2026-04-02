@@ -12,6 +12,11 @@ const PostSchema = new Schema<IPost>(
         _id: false,
       },
     ],
+    visibility: {
+      type: String,
+      enum: ["public", "private"],
+      default: "public",
+    },
     totalComments: { type: Number, default: 0 },
     totalLikes: { type: Number, default: 0 },
   },

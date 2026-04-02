@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import { StatusCodes } from "http-status-codes";
 import AppError from "../../errors/AppError";
 import {
@@ -36,13 +37,33 @@ const createNewPost = async (
     authorId: user._id,
     text: payload.text,
     images: uploadedImages,
+    visibility: payload.visibility,
   });
   return result;
 };
 
-const getAllPosts = () => {
-  const result = Post.find().populate("authorId", "firstName lastName");
-  return result;
+const getAllPosts = async (query: any) => {
+  const limit = parseInt(query.limit) || 10;
+  const cursor = query.cursor;
+
+  let filter: any = { visibility: "public" };
+
+  if (cursor) {
+    filter.createdAt = { $lt: new Date(cursor) };
+  }
+
+  const posts = await Post.find(filter)
+    .populate("authorId", "firstName lastName")
+    .sort({ createdAt: -1 })
+    .limit(limit);
+
+  const nextCursor =
+    posts.length > 0 ? posts[posts.length - 1].createdAt : null;
+
+  return {
+    data: posts,
+    nextCursor,
+  };
 };
 
 const getPostById = (postId: string) => {
