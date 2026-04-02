@@ -3,6 +3,7 @@ import authRouter from "../modules/auth/auth.router";
 import commentRouter from "../modules/comment/comment.router";
 import contactRouter from "../modules/contact/contact.router";
 import postRouter from "../modules/post/post.route";
+import replyCommentRouter from "../modules/replyComment/replyComment.router";
 import userRouter from "../modules/user/user.router";
 
 const router = Router();
@@ -27,6 +28,10 @@ const moduleRoutes = [
   {
     path: "/comment",
     route: commentRouter,
+  },
+  {
+    path: "/replyComment",
+    route: replyCommentRouter,
   },
 ];
 
