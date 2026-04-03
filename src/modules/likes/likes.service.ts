@@ -21,7 +21,7 @@ const toggleLikeForPost = async (email: string, postId: string) => {
   }
 
   const existingLike = await Likes.findOne({
-    userId: user._id, // should match your LikesSchema
+    userId: user._id, 
     targetId: postId,
     targetType: "Post",
   });
@@ -29,7 +29,6 @@ const toggleLikeForPost = async (email: string, postId: string) => {
   if (existingLike) {
     await Likes.findByIdAndDelete(existingLike._id);
 
-    // decrement likeCount
     await Post.findByIdAndUpdate(postId, { $inc: { totalLikes: -1 } });
 
     return { liked: false };
@@ -40,9 +39,7 @@ const toggleLikeForPost = async (email: string, postId: string) => {
       targetType: "Post",
     });
 
-    // increment likeCount
     await Post.findByIdAndUpdate(postId, { $inc: { totalLikes: 1 } });
-
     return { liked: true };
   }
 };
