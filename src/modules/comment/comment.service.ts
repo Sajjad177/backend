@@ -31,14 +31,10 @@ const createComment = async (email: string, payload: IComment) => {
   return result;
 };
 
-const getAllComments = async ({
-  cursor,
-  limit = 10,
-}: {
-  cursor?: string;
-  limit?: number;
-}) => {
-  const query: any = {};
+const getAllComments = async (query: any) => {
+  const limit = parseInt(query.limit) || 10;
+  const cursor = query.cursor;
+
 
   if (cursor) {
     query._id = { $lt: cursor };
@@ -55,7 +51,7 @@ const getAllComments = async ({
         select: "_id text",
       },
     ])
-    .sort({ _id: -1 }) 
+    .sort({ _id: -1 })
     .limit(limit + 1);
 
   let nextCursor: string | undefined = undefined;
