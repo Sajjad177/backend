@@ -37,15 +37,17 @@ const getAllComments = async () => {
     throw new AppError("Comments not found", StatusCodes.NOT_FOUND);
   }
 
-  const result = await Comment.find().populate([
-    {
-      path: "userId",
-      select: "firstName lastName",
-    },
-    {
-      path: "postId",
-    },
-  ]);
+  const result = await Comment.find()
+    .populate([
+      {
+        path: "userId",
+        select: "firstName lastName",
+      },
+      {
+        path: "postId",
+      },
+    ])
+    .sort({ createdAt: -1 });
   return result;
 };
 
