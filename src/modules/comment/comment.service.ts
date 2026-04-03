@@ -31,26 +31,44 @@ const createComment = async (email: string, payload: IComment) => {
   return result;
 };
 
-const getAllComments = async () => {
-  const isExist = await Comment.find();
-  if (!isExist) {
-    throw new AppError("Comments not found", StatusCodes.NOT_FOUND);
+const getAllComments = async ({
+  cursor,
+  limit = 10,
+}: {
+  cursor?: string;
+  limit?: number;
+}) => {
+  const query: any = {};
+
+  if (cursor) {
+    query._id = { $lt: cursor };
   }
 
-  const result = await Comment.find()
+  const comments = await Comment.find(query)
     .populate([
       {
         path: "userId",
-        select: "firstName lastName",
+        select: "firstName lastName avatar",
       },
       {
         path: "postId",
+        select: "_id text",
       },
     ])
-    .sort({ createdAt: -1 });
-  return result;
-};
+    .sort({ _id: -1 }) 
+    .limit(limit + 1);
 
+  let nextCursor: string | undefined = undefined;
+  if (comments.length > limit) {
+    const nextItem = comments.pop();
+    nextCursor = nextItem?._id.toString();
+  }
+
+  return {
+    data: comments,
+    nextCursor,
+  };
+};
 const commentService = {
   createComment,
   getAllComments,

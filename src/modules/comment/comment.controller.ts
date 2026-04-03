@@ -16,13 +16,16 @@ const createComment = catchAsync(async (req, res) => {
 });
 
 const getAllComments = catchAsync(async (req, res) => {
-  const result = await commentService.getAllComments();
+  const result = await commentService.getAllComments(req.query);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
     message: "Comments retrieved successfully",
-    data: result,
+    data: result.data,
+    meta: {
+      nextCursor: result.nextCursor,
+    },
   });
 });
 
