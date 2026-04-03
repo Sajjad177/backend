@@ -7,8 +7,6 @@ import ReplyComment from "./replyComment.model";
 
 const addReplyComment = async (email: string, payload: IReplyComment) => {
   const { commentId, text } = payload;
-
-  // 🔹 Check user
   const user = await User.findOne({ email });
   if (!user) {
     throw new AppError(
@@ -17,20 +15,20 @@ const addReplyComment = async (email: string, payload: IReplyComment) => {
     );
   }
 
-  // 🔹 Check comment exists
+
   const isCommentExist = await Comment.findById(commentId);
   if (!isCommentExist) {
     throw new AppError("Comment not found", StatusCodes.NOT_FOUND);
   }
 
-  // 🔹 Create reply
+
   const result = await ReplyComment.create({
     commentId,
     text,
     userId: user._id,
   });
 
-  // 🔹 Increase reply count (NOT likes)
+
   await Comment.findByIdAndUpdate(commentId, {
     $inc: { replyCount: 1 },
   });
