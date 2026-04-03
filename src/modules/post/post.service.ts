@@ -38,6 +38,7 @@ const createNewPost = async (
     text: payload.text,
     images: uploadedImages,
     visibility: payload.visibility,
+    postTime: new Date(),
   });
   return result;
 };
@@ -144,7 +145,7 @@ const updatePostById = async (
     }[];
   }
 
-  const updateData: any = { ...payload };
+  const updateData: any = { ...payload, postTime: new Date() };
   if (files && files.length > 0) {
     updateData.images = uploadedImages;
   }

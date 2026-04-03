@@ -19,6 +19,7 @@ const PostSchema = new Schema<IPost>(
     },
     totalComments: { type: Number, default: 0 },
     totalLikes: { type: Number, default: 0 },
+    postTime: { type: Date, default: Date.now },
   },
   { timestamps: true, versionKey: false },
 );

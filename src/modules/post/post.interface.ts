@@ -10,6 +10,7 @@ export interface IPost {
   visibility: "public" | "private";
   totalComments: number;
   totalLikes: number;
+  postTime: Date;
   createdAt?: Date;
   updatedAt?: Date;
 }
