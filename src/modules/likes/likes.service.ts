@@ -21,7 +21,7 @@ const toggleLikeForPost = async (email: string, postId: string) => {
   }
 
   const existingLike = await Likes.findOne({
-    userId: user._id, 
+    userId: user._id,
     targetId: postId,
     targetType: "Post",
   });
@@ -44,13 +44,23 @@ const toggleLikeForPost = async (email: string, postId: string) => {
   }
 };
 
-const toggleLikeForComment = async (email: string, commentId: string) => {
+const toggleLikeForComment = async (
+  email: string,
+  commentId: string,
+  payload: any,
+) => {
+  const { postId } = payload;
   const user = await User.findOne({ email });
   if (!user) {
     throw new AppError(
       "Your account is not found. Please sign up to create a post.",
       StatusCodes.NOT_FOUND,
     );
+  }
+
+  const post = await Post.findById(postId);
+  if (!post) {
+    throw new AppError("Post not found", StatusCodes.NOT_FOUND);
   }
 
   const comment = await Comment.findById(commentId);
@@ -61,6 +71,7 @@ const toggleLikeForComment = async (email: string, commentId: string) => {
   const existingLike = await Likes.findOne({
     userId: user._id,
     targetId: commentId,
+    postId: postId,
     targetType: "Comment",
   });
 
@@ -75,6 +86,7 @@ const toggleLikeForComment = async (email: string, commentId: string) => {
     await Likes.create({
       userId: user._id,
       targetId: commentId,
+      postId: postId,
       targetType: "Comment",
     });
     await Comment.findByIdAndUpdate(commentId, {
@@ -88,13 +100,21 @@ const toggleLikeForComment = async (email: string, commentId: string) => {
 const toggleLikeForCommentReply = async (
   email: string,
   replyCommentId: string,
+  payload: any,
 ) => {
+  const { postId } = payload;
+
   const user = await User.findOne({ email });
   if (!user) {
     throw new AppError(
       "Your account is not found. Please sign up to create a post.",
       StatusCodes.NOT_FOUND,
     );
+  }
+
+  const post = await Post.findById(postId);
+  if (!post) {
+    throw new AppError("Post not found", StatusCodes.NOT_FOUND);
   }
 
   const replyComment = await ReplyComment.findById(replyCommentId);
@@ -105,6 +125,7 @@ const toggleLikeForCommentReply = async (
   const existingLike = await Likes.findOne({
     userId: user._id,
     targetId: replyCommentId,
+    postId: postId,
     targetType: "ReplyComment",
   });
 
@@ -119,6 +140,7 @@ const toggleLikeForCommentReply = async (
     await Likes.create({
       userId: user._id,
       targetId: replyCommentId,
+      postId: postId,
       targetType: "ReplyComment",
     });
     await ReplyComment.findByIdAndUpdate(replyCommentId, {

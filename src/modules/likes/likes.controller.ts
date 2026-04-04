@@ -19,7 +19,7 @@ const toggleLikeForPost = catchAsync(async (req, res) => {
 const toggleLikeForComment = catchAsync(async (req, res) => {
   const { email } = req.user;
   const { commentId } = req.params;
-  const result = await likesService.toggleLikeForComment(email, commentId);
+  const result = await likesService.toggleLikeForComment(email, commentId, req.body);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -35,6 +35,7 @@ const toggleLikeForCommentReply = catchAsync(async (req, res) => {
   const result = await likesService.toggleLikeForCommentReply(
     email,
     replyCommentId,
+    req.body,
   );
 
   sendResponse(res, {

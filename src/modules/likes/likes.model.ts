@@ -13,6 +13,10 @@ const LikesSchema = new Schema<ILikes>(
       required: true,
       refPath: "targetType",
     },
+    postId: {
+      type: Schema.Types.ObjectId,
+      ref: "Post",
+    },
     targetType: {
       type: String,
       enum: ["Post", "Comment", "ReplyComment"],
