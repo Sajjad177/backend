@@ -8,6 +8,11 @@ const replyCommentSchema = new Schema<IReplyComment>(
       ref: "Comment",
       required: true,
     },
+    postId: {
+      type: Schema.Types.ObjectId,
+      ref: "Post",
+      required: true,
+    },
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",

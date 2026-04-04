@@ -17,14 +17,19 @@ const addReplyComment = catchAsync(async (req, res) => {
 
 const getAllReplyCommentByCommentId = catchAsync(async (req, res) => {
   const { commentId } = req.params;
-  const result =
-    await replyCommentService.getAllReplyCommentByCommentId(commentId);
+  const result = await replyCommentService.getAllReplyCommentByCommentId(
+    commentId,
+    req.query,
+  );
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
     message: "Reply comments retrieved successfully",
-    data: result,
+    data: result.data,
+    meta: {
+      nextCursor: result.nextCursor,
+    },
   });
 });
 
