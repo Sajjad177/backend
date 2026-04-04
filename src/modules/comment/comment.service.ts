@@ -35,7 +35,6 @@ const getAllComments = async (query: any) => {
   const limit = parseInt(query.limit) || 10;
   const cursor = query.cursor;
 
-
   if (cursor) {
     query._id = { $lt: cursor };
   }
@@ -65,9 +64,45 @@ const getAllComments = async (query: any) => {
     nextCursor,
   };
 };
+
+const getCommentByPostId = async (postId: string, query: any) => {
+  const limit = parseInt(query.limit) || 10;
+  const cursor = query.cursor;
+
+  if (cursor) {
+    query._id = { $lt: cursor };
+  }
+
+  const comments = await Comment.find({ postId })
+    .populate([
+      {
+        path: "userId",
+        select: "firstName lastName avatar",
+      },
+      {
+        path: "postId",
+        select: "_id text",
+      },
+    ])
+    .sort({ _id: -1 })
+    .limit(limit + 1);
+
+  let nextCursor: string | undefined = undefined;
+  if (comments.length > limit) {
+    const nextItem = comments.pop();
+    nextCursor = nextItem?._id.toString();
+  }
+
+  return {
+    data: comments,
+    nextCursor,
+  };
+};
+
 const commentService = {
   createComment,
   getAllComments,
+  getCommentByPostId,
 };
 
 export default commentService;

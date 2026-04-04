@@ -29,9 +29,25 @@ const getAllComments = catchAsync(async (req, res) => {
   });
 });
 
+const getCommentByPostId = catchAsync(async (req, res) => {
+  const { postId } = req.params;
+  const result = await commentService.getCommentByPostId(postId, req.query);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Comments retrieved successfully",
+    data: result.data,
+    meta: {
+      nextCursor: result.nextCursor,
+    },
+  });
+});
+
 const commentController = {
   createComment,
   getAllComments,
+  getCommentByPostId,
 };
 
 export default commentController;

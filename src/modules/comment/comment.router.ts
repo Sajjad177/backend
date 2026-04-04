@@ -8,6 +8,7 @@ const router = Router();
 router.post("/add", auth(USER_ROLE.USER), commentController.createComment);
 
 router.get("/", commentController.getAllComments);
+router.get("/:postId", commentController.getCommentByPostId);
 
 const commentRouter = router;
 export default commentRouter;
