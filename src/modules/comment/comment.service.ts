@@ -24,7 +24,7 @@ const createComment = async (email: string, payload: IComment) => {
     userId: user._id,
   });
 
-  await Post.findByIdAndUpdate(payload.postId, {
+  await Post.findByIdAndUpdate(isPostExist._id, {
     $inc: { totalComments: 1 },
   });
 

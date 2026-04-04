@@ -1,6 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import AppError from "../../errors/AppError";
 import Comment from "../comment/comment.model";
+import Post from "../post/post.model";
 import { User } from "../user/user.model";
 import { IReplyComment } from "./replyComment.interface";
 import ReplyComment from "./replyComment.model";
@@ -32,8 +33,8 @@ const addReplyComment = async (email: string, payload: IReplyComment) => {
     userId: user._id,
   });
 
-  await Comment.findByIdAndUpdate(commentId, {
-    $inc: { replyCount: 1 },
+  await Post.findByIdAndUpdate(postId, {
+    $inc: { totalComments: 1 },
   });
 
   return result;
