@@ -7,8 +7,8 @@ import hpp from "hpp";
 
 // Global rate limiter
 const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 min
-  max: 150,
+  windowMs: 30 * 60 * 1000, // 30 min
+  max: 70000,
   standardHeaders: true,
   legacyHeaders: false,
   message: "Too many requests, try again later.",
@@ -16,8 +16,8 @@ const globalLimiter = rateLimit({
 
 // Login-specific rate limiter
 export const loginLimiter = rateLimit({
-  windowMs: 20 * 60 * 1000,
-  max: 20,
+  windowMs: 30 * 60 * 1000,
+  max: 200,
   standardHeaders: true,
   legacyHeaders: false,
   message: "Too many login attempts, try again later.",
