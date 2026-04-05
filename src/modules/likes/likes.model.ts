@@ -20,7 +20,6 @@ const LikesSchema = new Schema<ILikes>(
     targetType: {
       type: String,
       enum: ["Post", "Comment", "ReplyComment"],
-      required: true,
     },
   },
   {
