@@ -192,35 +192,24 @@ const deletePostById = async (postId: string, email?: string) => {
 };
 
 
-
-
-const getAllCommentsByPostId = async (
-  postId: string,
-  limit = 10,
-  cursor?: string,
-) => {
-  let matchStage: any = {
-    postId: new mongoose.Types.ObjectId(postId),
-  };
-
-  // ✅ Cursor condition
-  if (cursor) {
-    matchStage.createdAt = {
-      $lt: new Date(cursor),
-    };
-  }
+const getAllCommentsByPostId = async (postId: string, page = 1, limit = 5) => {
+  const skip = (page - 1) * limit;
 
   const result = await Comment.aggregate([
     {
-      $match: matchStage,
-    },
-    {
-      $sort: { createdAt: -1, _id: -1 },
+      $match: {
+        postId: new mongoose.Types.ObjectId(postId),
+      },
     },
 
     {
-      $limit: limit,
+      $sort: { createdAt: -1 },
     },
+
+
+    { $skip: skip },
+    { $limit: limit },
+
 
     {
       $lookup: {
@@ -307,13 +296,7 @@ const getAllCommentsByPostId = async (
     },
   ]);
 
-  const nextCursor =
-    result.length > 0 ? result[result.length - 1].createdAt : null;
-
-  return {
-    data: result,
-    nextCursor,
-  };
+  return result;
 };
 
 const postService = {

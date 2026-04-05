@@ -77,18 +77,17 @@ const deletePostById = catchAsync(async (req, res) => {
 
 const getAllCommentsByPostId = catchAsync(async (req, res) => {
   const { postId } = req.params;
-  const page = Number(req.query.page) || 1;
 
-  const result = await postService.getAllCommentsByPostId(postId, page);
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 5;
+
+  const data = await postService.getAllCommentsByPostId(postId, page, limit);
 
   sendResponse(res, {
     statusCode: 200,
     success: true,
     message: "Comments retrieved successfully",
-    data: result.data,
-    meta: {
-      nextCursor: result.nextCursor,
-    },
+    data,
   });
 });
 
