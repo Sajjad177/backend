@@ -23,6 +23,8 @@ router.put(
   postController.updatePostById,
 );
 
+router.get("/comments/:postId", postController.getAllCommentsByPostId);
+
 router.delete("/:postId", auth(USER_ROLE.USER), postController.deletePostById);
 
 const postRouter = router;

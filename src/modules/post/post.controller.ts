@@ -47,7 +47,12 @@ const updatePostById = catchAsync(async (req, res) => {
   const { postId } = req.params;
   const files = req.files as Express.Multer.File[];
 
-  const result = await postService.updatePostById(postId, req.body, files, email);
+  const result = await postService.updatePostById(
+    postId,
+    req.body,
+    files,
+    email,
+  );
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -70,12 +75,30 @@ const deletePostById = catchAsync(async (req, res) => {
   });
 });
 
+const getAllCommentsByPostId = catchAsync(async (req, res) => {
+  const { postId } = req.params;
+  const page = Number(req.query.page) || 1;
+
+  const result = await postService.getAllCommentsByPostId(postId, page);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Comments retrieved successfully",
+    data: result.data,
+    meta: {
+      nextCursor: result.nextCursor,
+    },
+  });
+});
+
 const postController = {
   createNewPost,
   getAllPosts,
   getPostById,
   updatePostById,
   deletePostById,
+  getAllCommentsByPostId,
 };
 
 export default postController;

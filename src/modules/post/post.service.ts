@@ -8,6 +8,8 @@ import {
 import { User } from "../user/user.model";
 import { IPost } from "./post.interface";
 import Post from "./post.model";
+import mongoose from "mongoose";
+import Comment from "../comment/comment.model";
 
 const createNewPost = async (
   email: string,
@@ -189,12 +191,138 @@ const deletePostById = async (postId: string, email?: string) => {
   return result;
 };
 
+
+
+
+const getAllCommentsByPostId = async (
+  postId: string,
+  limit = 10,
+  cursor?: string,
+) => {
+  let matchStage: any = {
+    postId: new mongoose.Types.ObjectId(postId),
+  };
+
+  // ✅ Cursor condition
+  if (cursor) {
+    matchStage.createdAt = {
+      $lt: new Date(cursor),
+    };
+  }
+
+  const result = await Comment.aggregate([
+    {
+      $match: matchStage,
+    },
+    {
+      $sort: { createdAt: -1, _id: -1 },
+    },
+
+    {
+      $limit: limit,
+    },
+
+    {
+      $lookup: {
+        from: "users",
+        let: { userId: "$userId" },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ["$_id", "$$userId"] },
+            },
+          },
+          {
+            $project: {
+              firstName: 1,
+              lastName: 1,
+            },
+          },
+        ],
+        as: "user",
+      },
+    },
+    { $unwind: "$user" },
+
+    {
+      $lookup: {
+        from: "replycomments",
+        let: { commentId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ["$commentId", "$$commentId"],
+              },
+            },
+          },
+
+          {
+            $lookup: {
+              from: "users",
+              let: { userId: "$userId" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$_id", "$$userId"] },
+                  },
+                },
+                {
+                  $project: {
+                    firstName: 1,
+                    lastName: 1,
+                  },
+                },
+              ],
+              as: "user",
+            },
+          },
+          { $unwind: "$user" },
+
+          {
+            $project: {
+              text: 1,
+              createdAt: 1,
+              replyCommentTotalLikes: 1,
+              user: 1,
+            },
+          },
+
+          {
+            $sort: { createdAt: 1 },
+          },
+        ],
+        as: "replies",
+      },
+    },
+
+    {
+      $project: {
+        text: 1,
+        createdAt: 1,
+        commentTotalLikes: 1,
+        user: 1,
+        replies: 1,
+      },
+    },
+  ]);
+
+  const nextCursor =
+    result.length > 0 ? result[result.length - 1].createdAt : null;
+
+  return {
+    data: result,
+    nextCursor,
+  };
+};
+
 const postService = {
   createNewPost,
   getAllPosts,
   getPostById,
   updatePostById,
   deletePostById,
+  getAllCommentsByPostId,
 };
 
 export default postService;
