@@ -13,8 +13,8 @@ router.post(
   postController.createNewPost,
 );
 
-router.get("/", postController.getAllPosts);
-router.get("/:postId", postController.getPostById);
+router.get("/", auth(USER_ROLE.USER), postController.getAllPosts);
+router.get("/:postId", auth(USER_ROLE.USER), postController.getPostById);
 
 router.put(
   "/update/:postId",
@@ -23,7 +23,7 @@ router.put(
   postController.updatePostById,
 );
 
-router.get("/comments/:postId", postController.getAllCommentsByPostId);
+router.get("/comments/:postId", auth(USER_ROLE.USER), postController.getAllCommentsByPostId);
 
 router.delete("/:postId", auth(USER_ROLE.USER), postController.deletePostById);
 

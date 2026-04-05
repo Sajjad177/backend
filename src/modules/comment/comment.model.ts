@@ -25,5 +25,7 @@ const CommentSchema = new Schema<IComment>(
   { timestamps: true, versionKey: false },
 );
 
+CommentSchema.index({ postId: 1, createdAt: -1 });
+
 const Comment = model("Comment", CommentSchema);
 export default Comment;
