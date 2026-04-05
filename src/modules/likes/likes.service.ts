@@ -37,6 +37,7 @@ const toggleLikeForPost = async (email: string, postId: string) => {
       userId: user._id,
       targetId: postId,
       targetType: "Post",
+      postId: postId,
     });
 
     await Post.findByIdAndUpdate(postId, { $inc: { totalLikes: 1 } });

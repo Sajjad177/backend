@@ -13,13 +13,17 @@ const LikesSchema = new Schema<ILikes>(
       required: true,
       refPath: "targetType",
     },
-    postId: {
-      type: Schema.Types.ObjectId,
-      ref: "Post",
-    },
+
     targetType: {
       type: String,
       enum: ["Post", "Comment", "ReplyComment"],
+    },
+    postId: {
+      type: Schema.Types.ObjectId,
+      ref: "Post",
+      required: function () {
+        return this.targetType !== "Post";
+      },
     },
   },
   {
@@ -28,7 +32,7 @@ const LikesSchema = new Schema<ILikes>(
   },
 );
 
-LikesSchema.index({ userId: 1, targetId: 1 }, { unique: true });
+LikesSchema.index({ userId: 1, targetId: 1, targetType: 1 }, { unique: true });
 
 const Likes = model<ILikes>("Likes", LikesSchema);
 export default Likes;
