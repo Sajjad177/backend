@@ -28,7 +28,7 @@ const LikesSchema = new Schema<ILikes>(
   },
 );
 
-LikesSchema.index({ user: 1, targetId: 1, targetType: 1 }, { unique: true });
+LikesSchema.index({ user: 1, targetId: 1 }, { unique: true });
 
 const Likes = model<ILikes>("Likes", LikesSchema);
 export default Likes;
