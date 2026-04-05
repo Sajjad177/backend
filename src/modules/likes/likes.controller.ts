@@ -11,7 +11,7 @@ const toggleLikeForPost = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: `Post has been ${result.liked ? "liked" : "unliked"} successfully.`,
+    message: ` You ${result.liked ? "liked" : "unliked"} a post.`,
     data: result,
   });
 });
@@ -19,12 +19,16 @@ const toggleLikeForPost = catchAsync(async (req, res) => {
 const toggleLikeForComment = catchAsync(async (req, res) => {
   const { email } = req.user;
   const { commentId } = req.params;
-  const result = await likesService.toggleLikeForComment(email, commentId, req.body);
+  const result = await likesService.toggleLikeForComment(
+    email,
+    commentId,
+    req.body,
+  );
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: `Comment has been ${result.liked ? "liked" : "unliked"} successfully.`,
+    message: ` You ${result.liked ? "liked" : "unliked"} a comment.`,
     data: result,
   });
 });
@@ -41,7 +45,7 @@ const toggleLikeForCommentReply = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: `Reply comment has been ${result.liked ? "liked" : "unliked"} successfully.`,
+    message: ` You ${result.liked ? "liked" : "unliked"} a reply comment.`,
     data: result,
   });
 });
