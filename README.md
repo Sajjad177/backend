@@ -1,7 +1,7 @@
 # Social Media Backend API
 
 ## Project Description
-A robust and scalable Node.js backend built with Express and TypeScript for a dynamic social media application. This API handles user authentication, profile management, and social feed functionalities including post creation (with visibility controls), commenting, threaded replies, and a universal liking system. It emphasizes modern API design, integrating secure JWT-based authentication, structured type validation, centralized error handling, and file processing workflows.
+A scalable Node.js backend built with Express and TypeScript for a dynamic social media application. This API handles user authentication, profile management, and social feed functionalities including post creation (with visibility controls), commenting, threaded replies, and a universal liking system. It emphasizes modern API design, integrating secure JWT-based authentication, structured type validation, centralized error handling, and file processing workflows.
 
 ## Tech Stack
 - **Framework & Runtime:** Node.js, Express.js
@@ -12,7 +12,6 @@ A robust and scalable Node.js backend built with Express and TypeScript for a dy
 - **Media Uploads:** Cloudinary, Multer
 - **Security & Middleware:** Helmet, CORS, Express Rate Limit, Express Mongo Sanitize, XSS Clean, HPP
 - **Logging:** Pino, Pino-HTTP
-- **Other Utilities:** Socket.io (real-time communication), Nodemailer (emails), Stripe (payments integration)
 
 ## Features
 - **User Authentication:** 
@@ -25,8 +24,7 @@ A robust and scalable Node.js backend built with Express and TypeScript for a dy
   - **Likes:** Add or remove likes on both posts and individual comments.
   - **Comments:** Discuss posts with standard top-level comments.
   - **Replies:** Add nested replies directly to comments to support structured conversations.
-- **Media Integration:** Profile picture and post attachment uploads seamlessly optimized via Cloudinary.
-- **Robust Security:** Active request throttling, Cross-Site Scripting (XSS) prevention, and NoSQL injection protection.
+- **Security:** Active request throttling, Cross-Site Scripting (XSS) prevention, and NoSQL injection protection.
 
 ## Installation Instructions
 
@@ -75,8 +73,7 @@ The project relies on these core environment variables. Ensure they are correctl
 | `JWT_EXPIRES_IN` | Life cycle duration of the Access Token | `7d` |
 | `JWT_REFRESH_TOKEN_SECRET`| Secret key for signing Refresh Tokens | `your-refresh-secret` |
 | `JWT_REFRESH_EXPIRES_IN`| Life cycle duration of the Refresh Token | `30d` |
-| `EMAIL_ADDRESS` | SMTP email for automated dispatch | `your-email@gmail.com` |
-| `EMAIL_PASSWORD` | App Password associated with the SMTP email | `password-hash` |
+
 | `CLOUDINARY_CLOUD_NAME`| Cloud Name of your Cloudinary bucket | `...` |
 | `CLOUDINARY_API_KEY`| Standard API Key for Cloudinary | `...` |
 | `CLOUDINARY_API_SECRET`| Secure API Secret for Cloudinary uploads | `...` |
@@ -115,11 +112,6 @@ A brief overview of the main API routes available. Paths are typically mounted u
 - **Comment**: Dedicated to housing contextual feedback belonging to a specific Post ID and authored by a User.
 - **Reply**: Structurally dependent child records nested under a parent Comment to represent extended conversational trees.
 - **Like**: Employs referenced interactions capturing the target association (Post or Comment) to efficiently sum the upvotes.
-
-## Notes / Additional Information
-- Ensure the IP address of your hosting/local environment is whitelisted in MongoDB Atlas.
-- API requests passing payload data should utilize `application/json` Content-Type schemas.
-- Comprehensive request validation schema checks are active. Excluded or unauthorized payload properties will trigger a validation error dynamically.
 
 ## Author
 **Sajjad Hossain**
